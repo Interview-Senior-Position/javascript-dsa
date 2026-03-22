@@ -1,19 +1,23 @@
 # Arrays & common techniques
 
-**What arrays are good at:** Random access by index in **O(1)** and sequential scans in **O(n)**.
+## In plain English
 
-**JavaScript specifics:** Arrays are **dynamic** and act as lists. Index access is fast, but **inserting or deleting in the middle** shifts elements and costs **O(n)** in the worst case. For frequent head/tail operations, consider structures from the [stacks & queues](05-stacks-queues.md) topic.
+An **array** is a numbered row of slots: “give me item 5” is instant. **Walking the whole row once** scales with how long the row is (**linear**). **Sticking something in the middle** means scooting everyone over—slow on big arrays.
+
+**Layman:** Think of a concert line with fixed positions printed on the ground: jumping to seat 5 is easy; inserting a person in the middle makes everyone behind take one step (**slow**).
+
+**Technical:** Index access **O(1)**; full scan **O(n)**; insert/delete middle **O(n)** worst case. JS arrays are dynamic and implemented as contiguous storage with fast tail ops.
 
 ---
 
 ## Two pointers
 
-**Idea:** Place two indices (`lo`/`hi` or `slow`/`fast`) and move them according to a rule. Often **O(n)** with **O(1)** extra space instead of nested loops or extra data structures.
+**Layman:** Put one finger at the **start** and one at the **end** (or two speeds moving along). You move them according to a simple rule instead of checking every pair with nested loops—like squeezing a hose until the pressure is right.
 
-**Sorted two-sum:** If the array is sorted, compare `arr[lo] + arr[hi]` to the target: if the sum is too small, increase `lo`; if too large, decrease `hi`. That works because moving `lo` up increases the sum, moving `hi` down decreases it.
+**Technical:** Often **O(n)** time, **O(1)** extra space. On a **sorted** array, two-sum compares `lo + hi` to the target; shrinking `hi` lowers the sum, raising `lo` raises it.
 
 ```javascript
-// Sorted array: pair with target sum — O(n), O(1) space
+// Layman: squeeze from both ends until two numbers add to target — O(n)
 function twoSumSorted(arr, target) {
   let lo = 0, hi = arr.length - 1;
   while (lo < hi) {
@@ -25,7 +29,7 @@ function twoSumSorted(arr, target) {
   return null;
 }
 
-// Reverse in place — swap symmetric elements until pointers meet
+// Layman: swap first with last, then inward, until fingers meet — reverse in place
 function reverseInPlace(arr) {
   let i = 0, j = arr.length - 1;
   while (i < j) {
@@ -40,14 +44,12 @@ function reverseInPlace(arr) {
 
 ## Sliding window (fixed / variable)
 
-**Idea:** Maintain a **window** `[lo, hi]` of elements that satisfies a condition. Slide `hi` forward to grow, and adjust `lo` to restore the condition. Avoid recomputing from scratch each time—update sums/counts **incrementally**.
+**Layman:** Imagine a **window** sliding along the street. You only care about **who’s inside the window right now**—add the new person at the front, drop the one who left the back, instead of recounting everyone from scratch each time.
 
-**Fixed window:** After the first `k` elements, each step adds one new element and removes the one that left the window—**O(n)** total.
-
-**Variable window:** Expand `hi` until invalid, then shrink `lo` until valid again. Works well for “longest subarray with property X” when the property is **monotone** as you extend the window.
+**Technical:** Fixed-size window: **O(n)** one pass. Variable window: grow `hi`, shrink `lo` until a condition holds (monotone sum for non-negative numbers is typical).
 
 ```javascript
-// Max sum of k consecutive elements — O(n)
+// Layman: best total for exactly k houses in a row — slide one step at a time
 function maxSumSubarrayK(arr, k) {
   if (arr.length < k) return 0;
   let sum = 0;
@@ -60,7 +62,7 @@ function maxSumSubarrayK(arr, k) {
   return best;
 }
 
-// Longest subarray with sum ≤ target (non-negative values) — variable window
+// Layman: stretch window until sum too big, then shrink from left — longest “good” stretch
 function longestSubarrayAtMost(nums, target) {
   let lo = 0, sum = 0, best = 0;
   for (let hi = 0; hi < nums.length; hi++) {
@@ -78,9 +80,9 @@ function longestSubarrayAtMost(nums, target) {
 
 ## Prefix sum
 
-**Idea:** Precompute cumulative sums so any **range sum** `nums[l] + … + nums[r]` becomes **O(1)** after **O(n)** preprocessing.
+**Layman:** Precompute a **running total** once. Then “how much from house 3 to house 7?” is **end total minus start total**—one subtraction instead of re-adding.
 
-With `prefix[i] = sum(nums[0..i-1])`, the sum on `[l, r]` is `prefix[r+1] - prefix[l]`. A leading `0` simplifies indexing.
+**Technical:** `prefix[i] = sum(nums[0..i-1])`; range `[l,r]` sum is `prefix[r+1] - prefix[l]`. Build **O(n)**, query **O(1)**.
 
 ```javascript
 function buildPrefix(nums) {
@@ -89,7 +91,6 @@ function buildPrefix(nums) {
   return p; // p[i] = sum(nums[0..i-1])
 }
 
-// Sum of nums[l..r] inclusive = prefix[r+1] - prefix[l]
 function rangeSum(prefix, l, r) {
   return prefix[r + 1] - prefix[l];
 }
@@ -99,7 +100,9 @@ function rangeSum(prefix, l, r) {
 
 ## Kadane’s algorithm (max subarray sum)
 
-**Idea:** For each position, the best subarray **ending here** either starts fresh at `x` or extends the previous best. Track the global maximum. **O(n)** time, **O(1)** space.
+**Layman:** At each position ask: “Is it better to **extend** the streak I already have, or **start fresh** here?” Track the best streak you’ve seen anywhere.
+
+**Technical:** `cur = max(x, cur + x)`; `best = max(best, cur)`. **O(n)** time, **O(1)** space.
 
 ```javascript
 function maxSubarraySum(nums) {
@@ -116,7 +119,9 @@ function maxSubarraySum(nums) {
 
 ## Rotate / partition patterns
 
-**Dutch national flag (0, 1, 2):** Three regions—`[0..low-1]` are 0s, `[low..mid-1]` are 1s, unknown in the middle, `[high+1..end]` are 2s. Swap `mid` with `low` or `high` and shrink the unknown region. **O(n)** one pass.
+**Layman (Dutch flag):** Sort only **red, white, blue** in one pass. Keep three zones: “reds done,” “whites unknown,” “blues from the right.” Swap the unknown middle into the correct zone.
+
+**Technical:** Three pointers `low`, `mid`, `high`; **O(n)** one pass.
 
 ```javascript
 function sortColors(nums) {

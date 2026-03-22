@@ -1,20 +1,24 @@
 # Graphs
 
-**Graph:** Vertices (nodes) and **edges** (connections). **Directed** edges go one way; **undirected** edges are two-way.
+## In plain English
 
-**Representations:**
+A **graph** is **dots** (people, cities, tasks) and **lines** (friendships, roads, dependencies). **Undirected** = two-way street; **directed** = one-way arrow.
 
-- **Adjacency list:** `g[u] = [neighbors of u]` — sparse graphs, fast iteration of neighbors.
-- **Adjacency matrix:** `M[u][v]` edge weight or 0/1 — dense graphs; **O(V²)** space.
-- **Edge list:** list of `(u,v)` — simple, sometimes combined with other structures.
+**How to store it:**  
+**Adjacency list** = for each dot, **list who it touches** (common, compact).  
+**Matrix** = big table “does every pair connect?” (dense graphs).
 
-**Traversals:** **BFS** explores layer-by-layer (shortest path in **unweighted** graphs). **DFS** goes deep first (stack or recursion)—good for connectivity, cycles, topological sorting on DAGs.
+**Walking the graph:**  
+**BFS** = **ripple** outward in layers (shortest path if every edge counts as 1).  
+**DFS** = **follow one path** until dead end, then backtrack—like maze exploration.
 
 ---
 
 ## Adjacency list & DFS
 
-**DFS:** From a node, visit an unvisited neighbor, recurse or stack. **Time** **O(V + E)** with adjacency lists.
+**Layman:** From a starting dot, **visit neighbors**; mark **visited** so you don’t spin forever. **Recursive** DFS = “let the call stack do the backtracking.” **Iterative** DFS = explicit **stack**.
+
+**Technical:** Time **O(V + E)** with adjacency lists.
 
 ```javascript
 function buildGraph(n, edges) {
@@ -54,7 +58,9 @@ function dfsIterative(g, start) {
 
 ## BFS (shortest path, unweighted)
 
-**Idea:** Queue nodes by **increasing distance** from start. First time you reach `v`, you’ve used the **minimum number of edges**. **O(V + E)**.
+**Layman:** **Wave** by wave: first your friends (distance 1), then their friends (2), etc. **First time** you reach a node is the **shortest** hop count (unweighted).
+
+**Technical:** Queue + distance map; **O(V + E)**.
 
 ```javascript
 function bfsShortestPath(g, start, target) {
@@ -78,7 +84,9 @@ function bfsShortestPath(g, start, target) {
 
 ## Detect cycle (undirected, DFS)
 
-**Idea:** In an undirected graph, a DFS edge to an already **visited** node that is **not** your parent implies a **cycle**. Check every connected component.
+**Layman:** If you walk and meet someone **already visited** who isn’t **just the person you came from**, you found a **loop** in the road network.
+
+**Technical:** DFS with **parent** pointer; check all components.
 
 ```javascript
 function hasCycleUndirected(g) {
@@ -104,9 +112,9 @@ function hasCycleUndirected(g) {
 
 ## Topological sort (Kahn’s algorithm, DAG)
 
-**Topological order:** Linear ordering of vertices so every directed edge `u → v` has `u` before `v`. **Only exists** for a **DAG** (no directed cycles).
+**Layman:** **Dependencies** (A before B). Repeatedly do tasks **with no remaining prerequisites** (no incoming arrows). If you can’t finish all tasks, there’s a **dependency loop**.
 
-**Kahn:** Repeatedly remove nodes with **in-degree 0** (sources). If you process all `n` nodes, you have a valid order; if not, there is a **cycle**.
+**Technical:** Kahn’s algorithm; **in-degree** counts; **DAG** only.
 
 ```javascript
 function topologicalSort(n, edges) {
@@ -134,7 +142,9 @@ function topologicalSort(n, edges) {
 
 ## Union–Find (disjoint set)
 
-**Use case:** Dynamic connectivity—“are u and v in the same component?” and “merge components.” **Path compression** in `find` and **union by rank/size** make operations nearly **O(1)** amortized (inverse Ackermann).
+**Layman:** **Groups** merge over time: “Are **A** and **B** in the same group?” **Union** merges groups. **Path compression** = “everyone remembers the boss directly.”
+
+**Technical:** `find`/`union` nearly **O(1)** amortized with rank and path compression.
 
 ```javascript
 class UnionFind {

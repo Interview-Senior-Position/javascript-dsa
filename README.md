@@ -1,6 +1,6 @@
 # JavaScript DSA — Study Guide
 
-A navigable collection of data structures and algorithms topics. Each file includes **short explanations** (what/why/when) alongside **JavaScript** code snippets. Use the links below to move between files.
+A navigable collection of data structures and algorithms topics. Each file leads with **plain-English / layman** intuition, then a **technical** line where it helps, plus **JavaScript** snippets. Use the links below to move between files.
 
 ---
 

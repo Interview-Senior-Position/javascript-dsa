@@ -1,14 +1,22 @@
 # Hash maps & sets
 
-**Hash table:** Maps keys to values using a hash function and buckets. **Average** insert, lookup, and delete are **O(1)**; **worst case** (many collisions) can degrade to **O(n)**—rare with a good implementation.
+## In plain English
 
-**In JavaScript:** `Map` keeps **insertion order**, accepts **any** key type, and avoids prototype pitfalls of plain objects. `Object` is fine for string keys. `Set` stores **unique** values with similar complexity.
+A **hash map** (dictionary) is a **label → drawer** system: “student ID → backpack.” You don’t scan every drawer—**average** lookup is **instant** (like knowing the shelf number from a code).
+
+A **set** is “**have I seen this before?**” with no duplicates—like a **guest list** at the door.
+
+**Layman:** Collisions (two labels hashing to the same slot) are handled inside the engine; **rare** with good hashing. Worst cases can be slow but **usually** you ignore that in interviews.
+
+**Technical:** Average **O(1)** insert/lookup/delete; `Map` in JS keeps insertion order and supports any key type.
 
 ---
 
 ## Map & Set basics
 
-**When to use:** Counting frequencies, memoization, deduplication, O(1) membership tests, mapping values to indices (e.g. two-sum with one pass).
+**Layman:** Counting votes, remembering “last time we saw this number,” or “does this exist?”
+
+**Technical:** `Map` for key–value; `Set` for membership.
 
 ```javascript
 const freq = new Map();
@@ -25,7 +33,9 @@ seen.has(5); // true
 
 ## First unique character
 
-**Idea:** First pass counts occurrences; second pass finds the **first** index whose count is 1. **O(n)** time, **O(alphabet)** space.
+**Layman:** First pass: tally how many of each letter. Second pass: walk the string in order and return the **first** letter with count **1**.
+
+**Technical:** **O(n)** time, **O(alphabet)** space.
 
 ```javascript
 function firstUniqChar(s) {
@@ -42,7 +52,9 @@ function firstUniqChar(s) {
 
 ## Two sum (value → index)
 
-**Idea:** For each `nums[i]`, you need **`target - nums[i]`** seen earlier. Store **value → index** as you walk; if `need` is in the map, return both indices. **O(n)** time, **O(n)** space.
+**Layman:** Walking the list, you need **target − current number**. If that **partner** was already seen, you found the pair. **Notebook:** “number → position I saw it.”
+
+**Technical:** Hash map **value → index**; **O(n)** one pass.
 
 ```javascript
 function twoSum(nums, target) {
@@ -60,7 +72,9 @@ function twoSum(nums, target) {
 
 ## Group anagrams
 
-**Idea:** Anagrams share the same **sorted letters** (or same frequency signature). Use that string as a **hash key** to bucket words. Sorting each word costs **O(k log k)** per word of length `k`; total depends on total characters.
+**Layman:** Sort the letters of each word—**listen** and **silent** become the same **signature**. Bucket words with the same signature.
+
+**Technical:** Key = sorted letters string; **O(n · k log k)** for `n` words length `k` with sort.
 
 ```javascript
 function groupAnagrams(strs) {
@@ -78,9 +92,9 @@ function groupAnagrams(strs) {
 
 ## LRU cache (concept: Map as ordered + capacity)
 
-**LRU (least recently used):** When full, evict the item **not used for the longest time**.
+**Layman:** **LRU** = when the room is full, throw out whatever you **used longest ago**. **Touch** something → move it to “most recently used” side (in JS `Map`, re-inserting updates order).
 
-**Trick in JS:** `Map` iteration order follows insertion. On **get**, **delete** and **re-insert** to mark as most recently used. On **put**, if over capacity, delete the **first** key (`map.keys().next().value`) as LRU.
+**Technical:** `get` delete+set; `put` evict **first** key when over capacity.
 
 ```javascript
 class LRUCache {

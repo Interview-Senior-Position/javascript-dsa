@@ -1,16 +1,16 @@
 # Strings
 
-**Immutability:** In JavaScript, string values cannot be changed in place. Operations like `slice` or `replace` return **new** strings. For many small concatenations in a loop, repeated copying can become **O(n²)** total time; prefer **`join`** on an array of parts or a single `Array` buffer.
+## In plain English
 
-**When to use what:** Frequency maps solve “same multiset of characters” problems; two pointers solve palindromes and many O(n) scans on normalized text.
+Text is a **sequence of characters**. In JavaScript, **you cannot edit a string in place**—any “change” builds a **new** string. **Glueing many tiny pieces** in a loop (`s += ch`) can copy the whole thing over and over (**slow**). **Build a list of parts, then `join` once**—like writing on scrap paper and stapling at the end.
 
 ---
 
 ## Frequency maps
 
-**Idea:** Count how often each character appears. A `Map` (or array for limited alphabet) gives **O(n)** counting and **O(1)** expected lookups.
+**Layman:** Count how many of each letter—like tally marks for a spelling quiz. **Anagrams** are two words with the **same letter counts** (order doesn’t matter).
 
-**Anagrams:** Two strings are anagrams if every character count matches. You can increment for one string and decrement for the other in one pass; if all counts end at zero, they match.
+**Technical:** `Map` or fixed array for alphabet; **O(n)** time. Pairwise cancel counts with +1 / -1 in one pass.
 
 ```javascript
 function charFrequency(s) {
@@ -21,7 +21,7 @@ function charFrequency(s) {
   return map;
 }
 
-// Anagram check — O(n) time, O(alphabet) space
+// Layman: same letters, same counts → anagram; O(n)
 function isAnagram(a, b) {
   if (a.length !== b.length) return false;
   const count = new Map();
@@ -38,7 +38,9 @@ function isAnagram(a, b) {
 
 ## Palindrome / two pointers on string
 
-**Idea:** After **normalizing** (lowercase, strip non-alphanumeric if required), compare characters from both ends inward. **O(n)** time, **O(n)** extra space if you build a new string; two pointers on the normalized string only need **O(1)** extra if you index the original carefully.
+**Layman:** A **palindrome** reads the same forwards and backwards (“racecar”). After stripping junk and lowercasing, **compare outside-in**—like closing a book from both covers toward the middle.
+
+**Technical:** Normalize, then two pointers **O(n)** time; extra **O(n)** if you build a cleaned string.
 
 ```javascript
 function isPalindrome(s) {
@@ -55,7 +57,9 @@ function isPalindrome(s) {
 
 ## Longest common prefix (array of strings)
 
-**Idea:** Take the first string as the candidate prefix. For each other string, shrink the prefix until it is a prefix of that string (or empty). **O(S)** where `S` is total characters across all strings in the worst case.
+**Layman:** Start with the first word as your guess for “prefix everyone shares.” For each next word, **chop letters from the end** of the guess until it matches the start of that word.
+
+**Technical:** **O(total characters)** worst case across all strings.
 
 ```javascript
 function longestCommonPrefix(strs) {
@@ -75,10 +79,11 @@ function longestCommonPrefix(strs) {
 
 ## Rabin–Karp style rolling hash (concept)
 
-**Idea:** Treat a substring as a number in base 256 (or similar), hash it, and **slide** the window: subtract the contribution of the outgoing character and add the incoming one. Hash collisions are possible, so compare the actual substring when hashes match. Not for cryptography; fine for competitive / interview patterns.
+**Layman:** Turn a chunk of text into a **fingerprint** (number). Slide the window: subtract the contribution of the outgoing character, add the incoming one. If fingerprints match, **double-check** the actual text (fingerprints can collide).
+
+**Technical:** Rolling hash **O(n)** for substring search; **not** for cryptography.
 
 ```javascript
-// Simple numeric hash for substring compare (not cryptographically secure)
 function strStr(haystack, needle) {
   if (!needle.length) return 0;
   const BASE = 256;
@@ -107,11 +112,11 @@ function strStr(haystack, needle) {
 
 ## Builder pattern (avoid O(n²) concatenation)
 
-**Why:** `s += ch` in a loop may copy the growing string each time. Collect parts in an array and **`join`** once, or use a single preallocated strategy if the size is known.
+**Layman:** Don’t tape a **growing** poster every time you add one letter—collect pieces, **join once**.
+
+**Technical:** Repeated `+=` on strings may **O(n²)**; `array.join` is **O(n)**.
 
 ```javascript
-// Bad in a loop: s += ch (many reallocations)
-// Good:
 function buildString(parts) {
   return parts.join("");
 }

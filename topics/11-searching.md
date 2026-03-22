@@ -1,14 +1,18 @@
 # Searching & binary search
 
-**Binary search:** On a **sorted** array, compare the middle to the target and eliminate half the range each step—**O(log n)**. The same pattern finds **boundaries**: first position where `f(i)` is true, insertion point, etc.
+## In plain English
 
-**Generalization:** “Binary search on the **answer**”—search an integer range `[lo, hi]` where `feasible(mid)` is **monotone** (if `mid` works, larger might too, or the opposite). Many optimization problems use this.
+**Binary search** = **phone book** strategy: open to the **middle**; if your name is **before** that page, throw away the **right** half; else throw away the **left** half. Repeat. **Sorted** data required.
+
+**Search the answer:** Sometimes you don’t have a sorted array—you have a **number** (capacity, speed, time) and can ask “does **this** value **work**?” If “works” flips from **no** to **yes** as you increase the value, you can **binary search** that number.
 
 ---
 
 ## Classic binary search
 
-**Invariant:** Maintain `lo..hi` so the target, if present, stays inside. Exit when `lo > hi` or when found.
+**Layman:** Halve the remaining **range** until you find the target or run out.
+
+**Technical:** **O(log n)** on sorted array.
 
 ```javascript
 function binarySearch(arr, target) {
@@ -27,7 +31,9 @@ function binarySearch(arr, target) {
 
 ## Lower bound (first index ≥ target)
 
-**Idea:** Search for the **leftmost** position where `arr[pos] >= target`. Loop invariant: answer in `[lo, hi)`; shrink half-open range. Returns `arr.length` if all elements are smaller.
+**Layman:** Find the **first** slot where the value is **≥ target**—like “where would I **insert** this to keep order?”
+
+**Technical:** Half-open interval `[lo, hi)` invariant; returns `length` if all smaller.
 
 ```javascript
 function lowerBound(arr, target) {
@@ -43,9 +49,11 @@ function lowerBound(arr, target) {
 
 ---
 
-## Binary search on answer (minimize k such that feasible(k))
+## Binary search on answer (minimize k such as feasible(k))
 
-**Example:** Ship packages with weights `weights` in `days` days—minimize ship **capacity**. If capacity `C` works, any larger capacity also works (**monotone**). Search the smallest feasible `C`.
+**Layman:** Ship packages in **`days`** days—trucks have a **capacity**. Bigger capacity → **fewer** trips. Find the **smallest** capacity that still fits in `days` by asking “does this capacity work?” and halving the search range.
+
+**Technical:** Monotone `can(mid)`; binary search **O(n log sum)** for checking `mid`.
 
 ```javascript
 function minShipCapacity(weights, days) {
@@ -74,7 +82,9 @@ function minShipCapacity(weights, days) {
 
 ## Search in rotated sorted array
 
-**Idea:** One half of `[lo, hi]` is always **normally sorted**. Compare `nums[mid]` with ends to decide which half is sorted, then check whether `target` lies in that half’s range.
+**Layman:** A sorted list was **rotated** at some pivot—half of any range is still **normally sorted**. Compare **mid** to ends to find which half is sorted, then check if **target** sits in that half’s range.
+
+**Technical:** **O(log n)** with careful cases.
 
 ```javascript
 function searchRotated(nums, target) {

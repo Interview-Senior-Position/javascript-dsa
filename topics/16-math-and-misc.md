@@ -1,12 +1,18 @@
 # Math, number theory & misc
 
-**Common themes:** **Divisibility** (GCD/LCM), **primes** (sieve), **modular arithmetic** (avoid overflow, fast pow), **combinatorics** (binomial coefficients). In JS, watch **Number.MAX_SAFE_INTEGER**; use **`BigInt`** for exact large integers.
+## In plain English
+
+These are **number tricks** for **divisibility**, **primes**, **big powers mod something**, and **combinations** (how many ways to choose). **Interviews** and **contests** use them often.
+
+**JavaScript:** Normal numbers **lose precision** past **~9 × 10¹⁵**; use **`BigInt`** for exact huge integers.
 
 ---
 
 ## GCD & LCM (Euclidean algorithm)
 
-**GCD:** Greatest common divisor of `a` and `b`. **Euclidean algorithm:** `gcd(a,b) = gcd(b, a mod b)` until `b = 0`. **LCM:** `lcm(a,b) = |a*b| / gcd(a,b)` (use division after GCD to reduce overflow risk).
+**Layman:** **GCD** = largest number that **divides both** (tiles on a floor?). **Euclidean trick:** `gcd(a,b)` = `gcd(b, remainder of a÷b)` until remainder **0**. **LCM** = “how often both cycles align”—product divided by GCD.
+
+**Technical:** Euclidean algorithm **O(log min(a,b))**.
 
 ```javascript
 function gcd(a, b) {
@@ -26,7 +32,9 @@ function lcm(a, b) {
 
 ## Sieve of Eratosthenes (primes up to n)
 
-**Idea:** Mark multiples of each prime starting at `p²` (smaller multiples already handled). **O(n log log n)** time, **O(n)** space.
+**Layman:** List **2..n**. Cross out **multiples** of 2, then 3, then 5… **Skip** primes already crossed. What’s left = **primes**.
+
+**Technical:** **O(n log log n)** time, **O(n)** space.
 
 ```javascript
 function sieve(n) {
@@ -47,7 +55,9 @@ function sieve(n) {
 
 ## Fast exponentiation (mod)
 
-**Idea:** Write exponent in binary. Square the base and multiply result when the current bit is 1—**O(log exp)** multiplications. Essential for large powers under a modulus.
+**Layman:** Computing `base^exp` by multiplying **exp times** is slow. Write **exp** in binary: **square** each step and **multiply** when the bit is 1—like **Russian peasant** multiplication.
+
+**Technical:** **O(log exp)**; **mod** keeps numbers small.
 
 ```javascript
 function modPow(base, exp, mod) {
@@ -66,7 +76,9 @@ function modPow(base, exp, mod) {
 
 ## Combinations (n choose k) with mod — small table (Pascal)
 
-**Idea:** Pascal’s rule `C(n,k) = C(n-1,k-1) + C(n-1,k)`. Build a table up to `maxN`. Use modulo if answers must fit in a fixed range.
+**Layman:** “**n choose k**” = ways to pick **k** people from **n** without order. **Pascal’s triangle:** each cell = **sum of two above**—build triangle row by row.
+
+**Technical:** Pascal’s rule; table **O(n²)**.
 
 ```javascript
 function binomialTable(maxN, mod) {
@@ -85,7 +97,9 @@ function binomialTable(maxN, mod) {
 
 ## BigInt (when integers exceed safe integer)
 
-**Safe integers in JS:** `±(2^53 - 1)`. Beyond that, `Number` loses precision. **`BigInt`** literals end with `n`; use for exact arithmetic at the cost of no mixing with `Number` without conversion.
+**Layman:** JS **safe** integers stop around **9 quadrillion**. Bigger whole numbers? **`BigInt`**—no decimals, **exact** arithmetic.
+
+**Technical:** `suffix n` on literals; don’t mix with `Number` without conversion.
 
 ```javascript
 const x = 9007199254740993n; // larger than Number.MAX_SAFE_INTEGER

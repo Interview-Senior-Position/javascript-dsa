@@ -1,16 +1,22 @@
 # Greedy algorithms
 
-**Greedy:** At each step, take the **locally best** choice hoping it leads to a global optimum.
+## In plain English
 
-**When it works:** The problem has **greedy choice property** (a globally optimal solution can be built from locally optimal choices) and often **optimal substructure**. If unsure, compare with **DP** or try to **prove** exchange argument / stay-ahead proof.
+**Greedy:** At each step, take what looks **best right now**—**local** best—without redoing past choices.
 
-**Classic patterns:** Interval scheduling (earliest finish time), minimum arrows on overlapping intervals, fractional knapsack by **value/weight** ratio.
+**Layman:** Hiking for **shortest time** today might **not** be global best if you need a **long climb** later—but **some** problems are designed so **simple local rules** still win globally.
+
+**When it fails:** **0/1 knapsack** (whole items, weight limit)—local “take best value/weight” can miss the optimal combo. Use **DP** instead.
+
+**Classic wins:** **Interval** scheduling (finish **earliest** first), **fractional** knapsack (you can take **fractions** of items).
 
 ---
 
 ## Activity selection / non-overlapping intervals
 
-**Idea:** Sort by **end time**. Greedily keep the interval with the **earliest end** that doesn’t overlap the last chosen—maximizes room for future intervals.
+**Layman:** Meetings on a timeline—**maximize** how many you attend. **Pick the one that ends soonest** first; then **skip** anything overlapping. Repeat.
+
+**Technical:** Sort by **end time**; greedy count; **O(n log n)** for sort.
 
 ```javascript
 function eraseOverlapIntervals(intervals) {
@@ -28,7 +34,9 @@ function eraseOverlapIntervals(intervals) {
 
 ## Jump game (can reach last index?)
 
-**Idea:** Track the **farthest index** reachable from `[0..i]`. If you ever land past the last index’s reach, you can’t proceed.
+**Layman:** How far can you **reach** from where you stand? Each step **extends** your reach. If you can’t reach the next index, you’re **stuck**.
+
+**Technical:** Track **max reachable index**; **O(n)**.
 
 ```javascript
 function canJump(nums) {
@@ -45,7 +53,9 @@ function canJump(nums) {
 
 ## Minimum arrows to burst balloons (intervals)
 
-**Idea:** Sort by **start**. One arrow at position `end` bursts all overlapping balloons; when a balloon starts **after** `end`, shoot a new arrow and update `end` to that balloon’s minimum end.
+**Layman:** Balloons are **intervals** on a line. **One arrow** at position `x` pops every balloon **covering** `x`. **Shoot** at the **rightmost** point you can while still covering the current cluster; **move** when a balloon starts **after** that.
+
+**Technical:** Sort by start; merge overlap; **O(n log n)**.
 
 ```javascript
 function findMinArrowShots(points) {
@@ -69,11 +79,12 @@ function findMinArrowShots(points) {
 
 ## Fractional knapsack (concept — use value/weight ratio)
 
-**Idea:** You may take **fractions** of items. Sort by **value per weight** descending; take full items while capacity remains, then fill remainder of best ratio item. **Optimal** for fractional; **not** for 0/1 knapsack.
+**Layman:** You can take **pieces** of gold bars—**not** whole items only. **Take** the **best value per kilo** first until the bag is full.
+
+**Technical:** Sort by **value/weight**; **optimal** for fractional; **wrong** for 0/1 knapsack.
 
 ```javascript
 function fractionalKnapsack(items, W) {
-  // items: { weight, value }
   items.sort((a, b) => b.value / b.weight - a.value / a.weight);
   let profit = 0, w = 0;
   for (const it of items) {
@@ -94,7 +105,7 @@ function fractionalKnapsack(items, W) {
 
 ## Greedy vs DP
 
-**Rule of thumb:** Greedy is **faster** when valid; DP handles **constraints** where local choices interact (e.g. **0/1 knapsack**). If a counterexample breaks your greedy, switch to DP or exhaustive search with pruning.
+**Layman:** Greedy = **fast** rule when the problem guarantees it. DP = **try** combinations with memory when **today’s choice** affects **tomorrow’s** options.
 
 ---
 

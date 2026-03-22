@@ -1,14 +1,20 @@
 # Stacks & queues
 
-**Stack (LIFO):** Last item pushed is first popped—like a stack of plates. **Queue (FIFO):** First item in is first out—like a line.
+## In plain English
 
-**JavaScript note:** `array.push`/`pop` at the end give stack behavior in **O(1)** amortized. `array.shift()` from the front is **O(n)** on a plain array because elements shift. For a queue, use **two stacks**, a **deque** pattern, or a proper queue structure.
+**Stack:** Last in, first out—like a **stack of plates**: you only add/remove from the top.
+
+**Queue:** First in, first out—like a **checkout line**: the person who arrived first leaves first.
+
+**Layman:** In JS, `push`/`pop` at the **end** of an array is fast. **Taking from the front** (`shift`) shuffles everyone forward—**slow** for long lines. **Two stacks** can simulate a queue without shifting everyone each time.
 
 ---
 
 ## Stack (array)
 
-**Typical use:** Matching brackets, DFS, monotonic stack for “next greater element,” undo operations.
+**Layman:** Use for “**undo**,” matching **parentheses**, or “what did I see last?”
+
+**Technical:** `push`/`pop` amortized **O(1)** at array end.
 
 ```javascript
 const stack = [];
@@ -22,7 +28,9 @@ const x = stack.pop();
 
 ## Queue with two stacks (amortized O(1))
 
-**Idea:** **Enqueue** pushes onto `in`. **Dequeue** pops from `out`; if `out` is empty, **pour** all elements from `in` to `out` (reversing order so oldest ends up on top). Each element moves at most twice—**amortized** O(1) per operation.
+**Layman:** **Inbox** and **outbox** trays. New mail goes to **inbox**. To serve, if **outbox** is empty, **flip** the whole inbox into the outbox (order reverses so oldest is on top). Each letter moves at most twice.
+
+**Technical:** Two-stack queue; amortized **O(1)** per enqueue/dequeue.
 
 ```javascript
 class QueueTwoStacks {
@@ -53,13 +61,15 @@ class QueueTwoStacks {
 
 ## Monotonic stack (next greater element)
 
-**Idea:** Keep indices in **decreasing** value order. When you see a larger value, it is the “next greater” for everything smaller you pop. Left-to-right scan yields **next greater to the right** variants; you can adapt for previous greater, next smaller, etc.
+**Layman:** Keep a **deck of indices** with decreasing heights. When a **taller** building shows up, it tells everyone shorter still in the deck “I’m your next taller neighbor to the right”—then they leave the deck.
+
+**Technical:** Indices in **decreasing** value order; pop **smaller** tops when hitting larger `nums[i]`.
 
 ```javascript
 function nextGreaterElements(nums) {
   const n = nums.length;
   const ans = Array(n).fill(-1);
-  const st = []; // indices, decreasing values
+  const st = [];
   for (let i = 0; i < n; i++) {
     while (st.length && nums[st[st.length - 1]] < nums[i]) {
       ans[st.pop()] = nums[i];
@@ -74,7 +84,9 @@ function nextGreaterElements(nums) {
 
 ## Deque pattern with circular buffer (fixed max size optional)
 
-**Idea:** Allow efficient push/pop at both ends. This version uses a **lo** pointer so `popFront` can advance without shifting the whole array; **compact** occasionally to reclaim space.
+**Layman:** **Deque** = add/remove from **both** ends of a line. This version avoids shifting the whole array by tracking a **start offset** and occasionally **compacting**.
+
+**Technical:** Double-ended queue; **compact** when front index drifts too far.
 
 ```javascript
 class Deque {
@@ -112,7 +124,9 @@ class Deque {
 
 ## Valid parentheses
 
-**Idea:** On an opening bracket, **push** the expected closing type (or the opener). On closing, the stack top must **match**; otherwise invalid. End with an **empty** stack.
+**Layman:** Read left to right. **Opening** bracket → push onto a **pile**. **Closing** bracket → the top of the pile must be the matching opener. End with an **empty** pile.
+
+**Technical:** Stack **O(n)** time.
 
 ```javascript
 function isValid(s) {

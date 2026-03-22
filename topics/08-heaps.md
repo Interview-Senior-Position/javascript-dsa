@@ -1,16 +1,22 @@
 # Heaps & priority queues
 
-**Heap:** A **complete** binary tree stored in an array with the **heap property**: in a min-heap, each parent is ≤ its children. The **minimum** is always at index **0**.
+## In plain English
 
-**Operations:** **Peek** min is **O(1)**. **Insert** and **extract-min** are **O(log n)** via **sift-up** / **sift-down**.
+A **min-heap** is a **complete binary tree** stored in an array where **every parent is smaller than its children**. The **smallest** item is always at the **top** (index 0).
 
-**Priority queue:** Abstractly “process highest/lowest priority first”; a binary heap is the standard implementation. JavaScript has **no built-in heap**—implement one or use a library for interview-grade problems.
+**Heap vs sorted list:** You don’t fully sort everything—only enough structure to **always get the min** next. **Insert** and **remove-min** are **fast** (logarithmic in size).
+
+**Priority queue:** Serve the **highest-priority** item next (sometimes “smallest number first”). A heap is the usual engine.
+
+**Layman:** JS has **no** built-in heap—you implement one or use a library for interview-style problems.
 
 ---
 
 ## Min-heap class (array storage, 0-based)
 
-**Indexing:** Parent of `i` is `(i-1)>>1`. Children are `2*i+1` and `2*i+2`. **Sift up** after append; **sift down** after replacing root with last element.
+**Layman:** Store the tree **left-to-right** in an array. **Bubble up** after adding at the end; **sink down** after removing the top (replace with last item).
+
+**Technical:** Parent `i` has children `2i+1`, `2i+2`; sift-up / sift-down **O(log n)**.
 
 ```javascript
 class MinHeap {
@@ -70,9 +76,9 @@ class MinHeap {
 
 ## Top K frequent elements
 
-**Idea:** Count frequencies, then keep the **k** largest by count. A **min-heap of size k** on pairs `[count, value]` gives **O(n log k)**; sorting all unique entries is **O(u log u)** where `u` is unique count—often acceptable in interviews.
+**Layman:** Count how often each number appears, then pick the **k** most common—like top **k** vote getters.
 
-Below: sort by frequency (simplest to read). For a real heap solution, store `[count, num]` and compare by `count` in sift operations.
+**Technical:** Sorting unique entries is **O(u log u)**; **min-heap of size k** can be **O(n log k)**; below uses sort for readability.
 
 ```javascript
 function topKFrequent(nums, k) {
@@ -89,9 +95,9 @@ function topKFrequent(nums, k) {
 
 ## Merge K sorted lists (heap idea)
 
-**Ideal approach:** Min-heap of size **k** storing current head of each list (or divide-and-conquer merge pairs). **O(N log k)** for total nodes `N`.
+**Layman:** **Ideal:** keep the **smallest current head** among `k` lists in a heap—always **advance** the list that won. **Below:** dump all values and sort—simple but not **O(N log k)**.
 
-**Below:** Collecting all values and sorting is **O(N log N)**—only for illustration when lists are small.
+**Technical:** Full sort merge is **O(N log N)**.
 
 ```javascript
 function mergeKLists(lists) {
@@ -112,7 +118,7 @@ function mergeKLists(lists) {
 
 ## Note: `sort` with comparator
 
-**Interview tip:** Saying “sort by X” is fine if you state **O(n log n)**. Mention a **heap** when `k` is small vs `n` or data is **streaming**.
+**Layman:** Saying “sort by frequency” is fine; mention **n log n** time. Mention **heap** when `k` is tiny vs `n`.
 
 ---
 

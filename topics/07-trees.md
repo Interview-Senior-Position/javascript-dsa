@@ -1,12 +1,20 @@
 # Trees & tries
 
-**Tree:** Connected acyclic graph; rooted trees have a **root** and parent/child edges. **Binary tree:** at most two children per node.
+## In plain English
 
-**Binary search tree (BST):** For distinct keys, **left subtree** values are smaller than the root; **right subtree** values are larger. Enables **O(log n)** search in a **balanced** BST; skewed trees behave like linked lists (**O(n)**).
+A **tree** is a **family chart**: one **root** (ancestor), branches to children, **no cycles** (you can’t loop back to an ancestor following only parent→child links).
+
+A **binary tree** = at most **two** kids per node (left / right).
+
+**Binary search tree (BST):** For distinct keys, **everything left** is smaller than this node; **everything right** is larger—like a **sorted phone book** folded in half repeatedly. **Balanced** tree → fast search; **skewed** (a chain) → behaves like a **linked list**.
 
 ---
 
 ## TreeNode
+
+**Layman:** Each box holds a **value** and optional **left** and **right** child.
+
+**Technical:** `TreeNode { val, left, right }`.
 
 ```javascript
 class TreeNode {
@@ -22,13 +30,14 @@ class TreeNode {
 
 ## Traversals
 
-**Inorder (left, root, right):** On a BST, visits nodes in **sorted order**.
+**Layman:**
 
-**Preorder (root, left, right):** Useful for copying/serializing tree structure.
+- **Inorder:** Left subtree, **me**, right subtree — on a BST gives **sorted order** (small → big).
+- **Preorder:** **Me** first, then left, then right — good for **copying** the shape (“save root, then children”).
+- **Postorder:** Children first, **me** last — good for **deleting** from leaves up.
+- **Level order:** **Row by row** (breadth-first) — like reading a stadium **level by level**.
 
-**Postorder (left, right, root):** Useful when deleting or computing bottom-up values.
-
-**Level order (BFS):** Process level by level; uses a **queue**. **O(n)** time, **O(w)** extra space where `w` is max width.
+**Technical:** DFS recursions **O(n)** time; level order uses a **queue**, **O(n)** time, **O(width)** extra space.
 
 ```javascript
 function inorder(root, out = []) {
@@ -78,7 +87,9 @@ function levelOrder(root) {
 
 ## Height / depth
 
-**Idea:** Height is **1 + max** of children’s heights; empty tree has height **0**. Depth from root to node is path length.
+**Layman:** Height = **longest path** down to a leaf. Empty tree = **0** height.
+
+**Technical:** `1 + max(left height, right height)`.
 
 ```javascript
 function maxDepth(root) {
@@ -91,7 +102,9 @@ function maxDepth(root) {
 
 ## Validate BST (bounds)
 
-**Idea:** Each node must lie in an **open interval** `(min, max)` inherited from ancestors. Left child tightens the **upper** bound to `root.val`; right child tightens the **lower** bound to `root.val`. **O(n)** time.
+**Layman:** Each node must stay inside a **valid range** passed down from parents. Left child must be **below** parent; right child **above**—and ranges **tighten** as you go.
+
+**Technical:** `min/max` bounds; **O(n)**.
 
 ```javascript
 function isValidBST(root, min = -Infinity, max = Infinity) {
@@ -108,7 +121,9 @@ function isValidBST(root, min = -Infinity, max = Infinity) {
 
 ## Lowest common ancestor (BST)
 
-**Idea:** Walk from root. If both `p` and `q` are smaller than root, LCA is in the **left** subtree; if both larger, in the **right**; otherwise the current root **separates** them and is the LCA. **O(h)** height time.
+**Layman:** If both targets are **smaller** than root, go **left**; if both **larger**, go **right**. **Split** (one left, one right) → current root is the **first ancestor** shared by both.
+
+**Technical:** **O(height)** time.
 
 ```javascript
 function lowestCommonAncestor(root, p, q) {
@@ -126,7 +141,9 @@ function lowestCommonAncestor(root, p, q) {
 
 ## Trie (prefix tree)
 
-**Trie:** Each edge is labeled with a character; paths from root spell **prefixes**. Good for **prefix search**, autocomplete, and counting words with shared prefixes. **Insert/search** is **O(L)** for word length `L`.
+**Layman:** A **prefix tree** for words—each step down is a **letter**. Paths from the top spell **prefixes**. Great for autocomplete: “do any words start with **ca**?”
+
+**Technical:** Insert/search **O(L)** for word length `L`.
 
 ```javascript
 class TrieNode {

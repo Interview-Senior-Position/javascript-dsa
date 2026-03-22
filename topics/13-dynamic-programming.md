@@ -1,14 +1,20 @@
 # Dynamic programming
 
-**When it applies:** The problem has **optimal substructure** (optimal solution built from optimal subsolutions) and **overlapping subproblems** (same subproblem solved many times naively).
+## In plain English
 
-**Methods:** **Memoization** (recursive + cache), **tabulation** (fill table bottom-up). Often you can reduce space to **previous row** or a few variables.
+**Dynamic programming (DP):** You **reuse answers** to smaller problems instead of recomputing them. Like a **memo** on a test: if you already solved “ways to reach step 5,” **look it up** instead of recounting from scratch.
+
+**When it fits:** The big answer is built from **smaller** answers (**optimal substructure**), and the same small question appears **many times** (**overlapping subproblems**).
+
+**Two styles:** **Top-down** (recurse + cache) vs **bottom-up** (fill a table **row by row**).
 
 ---
 
 ## Climbing stairs
 
-**Model:** Reach step `n` from `n-1` or `n-2`. Ways(n) = Ways(n-1) + Ways(n-2)—Fibonacci. **O(n)** time, **O(1)** space with two variables.
+**Layman:** Reach step `n` by taking **1 or 2** steps at a time. Ways to reach `n` = ways to `(n-1)` + ways to `(n-2)`—same idea as **Fibonacci**.
+
+**Technical:** **O(n)** time, **O(1)** space with two variables.
 
 ```javascript
 function climbStairs(n) {
@@ -23,7 +29,9 @@ function climbStairs(n) {
 
 ## House robber (linear)
 
-**Idea:** For each house, either **skip** it (take previous best) or **rob** it (add value to best from two steps back). `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`.
+**Layman:** Houses in a line; **can’t rob two neighbors**. At each house: **skip** it (take best so far) or **rob** it (add money + best from **two** houses back).
+
+**Technical:** `dp[i] = max(dp[i-1], dp[i-2] + nums[i])`; rolling variables.
 
 ```javascript
 function rob(nums) {
@@ -41,7 +49,9 @@ function rob(nums) {
 
 ## Longest increasing subsequence — O(n log n) with patience sorting
 
-**Idea:** Maintain **`tails[k]`** = smallest ending value of an increasing subsequence of length `k+1`. For each `x`, **binary search** where to place `x` (replace first `≥ x`). Length of `tails` is the LIS length.
+**Layman:** Keep **piles** of cards (patience): for each number, **place** it on the **leftmost** pile whose top is **≥** it. The number of piles = **LIS length**. Binary search finds the pile.
+
+**Technical:** `tails` array + binary search; **O(n log n)**.
 
 ```javascript
 function lengthOfLIS(nums) {
@@ -64,7 +74,9 @@ function lengthOfLIS(nums) {
 
 ## 0/1 Knapsack (tabulation)
 
-**Idea:** Each item **once**—either take (add value, subtract capacity) or skip. `dp[i][w]` = max value using first `i` items with capacity `w`.
+**Layman:** **One copy** of each item; bag has **weight limit**. Table: **best value** using first `i` items with capacity `w`—either **skip** item `i` or **take** it (if it fits).
+
+**Technical:** 2D DP **O(n·W)**.
 
 ```javascript
 function knapsack(weights, values, W) {
@@ -89,7 +101,9 @@ function knapsack(weights, values, W) {
 
 ## Edit distance
 
-**Idea:** `dp[i][j]` = min operations to convert first `i` chars of `word1` to first `j` chars of `word2`. Match: no cost; else **1 + min**(delete, insert, replace).
+**Layman:** Turn **word1** into **word2** with **insert**, **delete**, **replace**—minimum **moves**. Table cell = cost to match **prefixes** of both words.
+
+**Technical:** Match → free; else **1 + min** of three neighbors.
 
 ```javascript
 function minDistance(word1, word2) {
@@ -114,7 +128,9 @@ function minDistance(word1, word2) {
 
 ## Coin change (unbounded)
 
-**Idea:** Each coin used **unlimited** times. `dp[a]` = min coins for amount `a`; try every coin `c ≤ a`.
+**Layman:** **Infinite** coins of each type; **fewest** coins to make `amount`. For each amount, try **last coin** being each denomination.
+
+**Technical:** 1D DP **O(amount · coins)**.
 
 ```javascript
 function coinChange(coins, amount) {

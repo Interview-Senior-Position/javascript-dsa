@@ -1,14 +1,20 @@
 # Sorting
 
-**Stability:** A **stable** sort keeps the relative order of equal keys. **Merge sort** is stable; typical **quick sort** in-place is **not** stable.
+## In plain English
 
-**Comparison lower bound:** Any comparison-based sort needs **Ω(n log n)** comparisons in the worst case.
+**Sorting** = put things in **order** (smallest to largest, or A–Z).
+
+**Stable sort:** If two items **tie**, their **original order** is preserved—like two people named “Alex” keeping their line order.
+
+**Why not always bubble sort?** For big lists, **smarter** methods do far less work. Comparison sorts can’t beat **n log n** in the worst case (roughly)—that’s a **fundamental** limit.
 
 ---
 
 ## Bubble sort — O(n²)
 
-**Idea:** Repeatedly swap adjacent elements if out of order; each pass bubbles the largest unsorted element to the end. Simple but slow—mainly pedagogical.
+**Layman:** Walk the line repeatedly; **swap neighbors** if they’re wrong. Big values “**bubble**” to the end. Simple to explain, **slow** on large data—teaching only.
+
+**Technical:** **O(n²)** time; in-place.
 
 ```javascript
 function bubbleSort(arr) {
@@ -26,7 +32,9 @@ function bubbleSort(arr) {
 
 ## Merge sort — O(n log n), O(n) extra space
 
-**Idea:** **Divide** array in half, sort halves **recursively**, **merge** two sorted halves in linear time. Predictable **O(n log n)** worst case; uses **O(n)** auxiliary space for merging.
+**Layman:** **Split** the pile in half until **tiny** piles, **sort** each half, **merge** two sorted piles like **zippering** two lines of people by height.
+
+**Technical:** Divide-and-conquer; **O(n log n)** worst case; **O(n)** extra for merged output.
 
 ```javascript
 function mergeSort(arr) {
@@ -50,7 +58,9 @@ function merge(a, b) {
 
 ## Quick sort (Lomuto partition) — average O(n log n)
 
-**Idea:** Pick a **pivot** (here, last element), partition so smaller elements are left, larger right, then recurse. **Average** **O(n log n)**; **worst** **O(n²)** on bad pivots (mitigated by random pivot in practice).
+**Layman:** Pick a **pivot** (reference height). **Partition:** smaller left, larger right. **Recurse** on left and right. Bad pivot choices can make it **slow**; random pivot helps in practice.
+
+**Technical:** Average **O(n log n)**; worst **O(n²)**; in-place.
 
 ```javascript
 function quickSort(arr, lo = 0, hi = arr.length - 1) {
@@ -78,7 +88,9 @@ function partition(arr, lo, hi) {
 
 ## Counting sort — O(n + k) when keys in small range
 
-**Idea:** Count how many of each key, then write that many copies in order. **Not comparison-based**; requires **integer keys in a bounded range** `[0, maxVal]`. **Stable** if implemented carefully (often cumulative counts).
+**Layman:** If values are only **small integers** (e.g. grades 0–100), **count** how many of each, then **print** that many copies in order—no comparing pairs.
+
+**Technical:** **O(n + k)** where `k` is value range; not comparison-based.
 
 ```javascript
 function countingSort(arr, maxVal) {
@@ -96,7 +108,9 @@ function countingSort(arr, maxVal) {
 
 ## Built-in sort
 
-**Critical:** Default `sort()` converts elements to strings—**`[10,2,1]` sorts wrong**. Always pass **`(a,b) => a - b`** for numbers.
+**Layman:** JS **sort** treats numbers as **text** by default—**10** comes before **2**. Always pass a **compare function** for numbers.
+
+**Technical:** Timsort-style in modern engines—typically **O(n log n)**.
 
 ```javascript
 const nums = [10, 2, 1];

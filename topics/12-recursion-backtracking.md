@@ -1,14 +1,20 @@
 # Recursion & backtracking
 
-**Recursion:** A function calls itself on a **smaller** subproblem until a **base case** stops. Costs **call stack** space proportional to **depth** (often **O(n)** or **O(log n)**).
+## In plain English
 
-**Backtracking:** Build a solution step by step (**candidates**). **Choose** an option, recurse, then **undo** (backtrack) to try the next option. Prune when constraints fail early.
+**Recursion:** A task **calls itself** on a **smaller** version until a **stopping rule** (base case)—like Russian dolls or “countdown to zero.”
+
+**Backtracking:** Try a **choice**, go deeper; if it **fails**, **undo** (backtrack) and try the next choice—like solving a maze: go forward, hit wall, **step back**, try another turn.
+
+**Layman cost:** Each recursive call uses **stack space** (memory). Very deep chains can **overflow** the stack.
 
 ---
 
 ## Factorial / Fibonacci (recursive)
 
-**Fibonacci:** Naive recursion recomputes the same subproblems exponentially—**O(2ⁿ)** time. **Iterative** or **memoization** gives **O(n)**.
+**Layman:** Naive Fibonacci recomputes the **same** subproblems again and again—like recomputing “ways to step 3” from scratch every time. **Iterative** = remember **last two** numbers only.
+
+**Technical:** Naive fib **O(2ⁿ)** time; iterative **O(n)**.
 
 ```javascript
 function fib(n) {
@@ -16,7 +22,6 @@ function fib(n) {
   return fib(n - 1) + fib(n - 2);
 }
 
-// Better: iterative O(n) time, O(1) space
 function fibIter(n) {
   let a = 0, b = 1;
   for (let i = 0; i < n; i++) [a, b] = [b, a + b];
@@ -28,7 +33,9 @@ function fibIter(n) {
 
 ## Subsets (backtracking)
 
-**Idea:** At each index, either **include** or **exclude** elements (here: include with increasing index to avoid duplicates). Snapshot `path` when recording answers.
+**Layman:** Build **every combination** of items: at each step, **take** an item and recurse, then **put it back** and try the next. Snapshot the bag at each point.
+
+**Technical:** **O(2ⁿ)** subsets.
 
 ```javascript
 function subsets(nums) {
@@ -50,7 +57,9 @@ function subsets(nums) {
 
 ## Permutations
 
-**Idea:** Fill positions one by one; track **used** indices so each element appears once. **O(n · n!)** time roughly—factorial search space.
+**Layman:** **Orderings** of all items: fill slots one by one; mark **used** so you don’t pick the same card twice.
+
+**Technical:** **O(n!)** arrangements.
 
 ```javascript
 function permute(nums) {
@@ -78,7 +87,9 @@ function permute(nums) {
 
 ## N-Queens (pruning)
 
-**Idea:** Place queens row by row. **Column** and both **diagonals** (`r - c` and `r + c`) must be unique. If a position conflicts, **skip** early—don’t explore doomed branches.
+**Layman:** Place queens **row by row**. If a column or diagonal **already** has a queen, **don’t** go there—**prune** bad branches early.
+
+**Technical:** Sets for column and diagonals `r-c`, `r+c`.
 
 ```javascript
 function solveNQueens(n) {
@@ -109,7 +120,9 @@ function solveNQueens(n) {
 
 ## Word search (grid DFS)
 
-**Idea:** From each cell, **DFS** along matching characters. **Mark** visited cells (e.g. with `#`) to avoid reusing the same cell in one path; **restore** after recursion.
+**Layman:** From a cell, spell the word **letter by letter**, walking **up/down/left/right**. **Temporarily** mark visited cells so you don’t reuse them in **one** path; **erase** mark when backing up.
+
+**Technical:** DFS + backtrack on grid.
 
 ```javascript
 function exist(board, word) {
